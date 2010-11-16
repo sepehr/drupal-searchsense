@@ -9,7 +9,117 @@
 /**
  * Implements hook_searchsense.
  */
-function nodesense_searchsense($string = '') {
+function nodesense_searchsense($string = '', $limit = 10) {
+  $matches = array();
+  $table = variable_get('nodesense_suggest_revision_title', TRUE) ? 'node_revisions' : 'node';
   
+  if ($string) {
+    $results = db_query_range("SELECT title FROM {$table} WHERE title LIKE '%s%%'", $string, 0, (int) $limit);
+    while ($result = db_fetch_object($results)) {
+      $matches[$result->title] = check_plain($result->title);
+    }
+  }
+
+  return $matches;
+}
+
+
+/**
+ * Implements hook_searchsense_settings.
+ *
+ * @todo Add descriptions.
+ */
+function nodesense_searchsense_settings() {
+  $form = array();
+  
+  $form ['nodesense'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Node Autocompletion'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  
+  $form ['nodesense']['nodesense_suggest_title'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Suggest node titles.'),
+    '#description' => t('You cannot disable this option.'),
+    '#default_value' => 1,
+    '#return_value' => 1,
+    '#disabled' => TRUE,
+  );
+  
+  $form ['nodesense']['nodesense_suggest_revision_title'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Suggest node revision titles, too.'),
+    '#default_value' => variable_get('nodesense_suggest_revision_title', 1),
+    '#return_value' => 1,
+  );
+  
+  $form ['nodesense']['nodesense_left_match_title'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Just <em>left match</em> to find suggestions.'),
+    '#default_value' => variable_get('nodesense_left_match_title', 1),
+    '#return_value' => 1,
+  );
+  
+  $form ['nodesense']['nodesense_suggest_unpublished'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Include unpublished nodes in suggestions.'),
+    '#default_value' => variable_get('nodesense_suggest_unpublished', 1),
+    '#return_value' => 1,
+  );
+  
+  $form ['nodesense']['nodesense_sort_orderby'] = array(
+    '#type' => 'radios',
+    '#title' => t('Sort suggestions by'),
+    '#default_value' => variable_get('nodesense_sort_orderby', 'changed'),
+    '#options' => array(
+      'changed' => t('Update date'),
+      'created' => t('Creation date'),
+      'nid' => t('Node identifier'),
+      'vid' => t('Revision identifier'),
+    ),
+  );
+  
+  $form ['nodesense']['nodesense_sort_order'] = array(
+    '#type' => 'radios',
+    '#title' => t('Sort order'),
+    '#default_value' => variable_get('nodesense_sort_order', 'DESC'),
+    '#options' => array(
+      'DESC' => t('Descending'),
+      'ASC' => t('Ascending'),
+    ),
+  );
+  
+  // Get a list of languages.
+  $tmp = language_list();
+  foreach ($tmp as $key => $language) {
+    $tmp[$key] = $language->name;
+  }
+
+  $form ['nodesense']['nodesense_restrict_languages'] = array(
+    '#type' => 'select',
+    '#multiple' => TRUE,
+    '#title' => t('Restrict suggestions to nodes in only these languages'),
+    '#default_value' => variable_get('nodesense_restrict_languages', 'all'),
+    '#options' => array('all' => 'All languages') + $tmp,
+  );
+  
+  // Get a list of node types.
+  $tmp = node_get_types();
+  foreach ($tmp as $key => $type) {
+    $tmp[$key] = $type->name;
+  }
+
+  $form ['nodesense']['nodesense_restrict_types'] = array(
+    '#type' => 'select',
+    '#multiple' => TRUE,
+    '#title' => t('Restrict suggestions to nodes of these types'),
+    '#default_value' => variable_get('nodesense_restrict_types', 'all'),
+    '#options' => array('all' => 'All types') + $tmp,
+  );
+  unset($tmp);
+  
+  return $form;
 }
 

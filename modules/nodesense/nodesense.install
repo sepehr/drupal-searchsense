@@ -10,6 +10,13 @@
  * Implements hook_uninstall().
  */
 function nodesense_uninstall() {
-
+  variable_del('nodesense_suggest_title');
+  variable_del('nodesense_suggest_revision_title');
+  variable_del('nodesense_left_match_title');
+  variable_del('nodesense_suggest_unpublished');
+  variable_del('nodesense_sort_orderby');
+  variable_del('nodesense_sort_order');
+  variable_del('nodesense_restrict_languages');
+  variable_del('nodesense_restrict_types');
 }
 
