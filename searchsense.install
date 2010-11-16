@@ -5,12 +5,12 @@
  * @file
  * Iran.tc un/installtion hooks.
  */
- 
+
 /**
  * Implements hook_install().
  */
 function searchsense_install() {
-  drupal_set_message(st('Searchsense has been installed. Please configure it in the <a href="!link">search settings page</a>.',
+  drupal_set_message(st('Searchsense has been installed. You can configure it via the <a href="!link">search settings</a> page.',
     array('!link' => url('admin/settings/search'))
   ));
 }
@@ -19,6 +19,9 @@ function searchsense_install() {
  * Implements hook_uninstall().
  */
 function search_sense_uninstall() {
-  
+  variable_get('searchsense_user_search');
+  variable_get('searchsense_theme_search');
+  variable_get('searchsense_block_search');
+  variable_get('searchsense_advanced_search');
 }
 

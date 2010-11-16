@@ -10,24 +10,129 @@
  * Implements hook_perm().
  */
 function searchsense_perm() {
-
+  return array(
+    'administer searchsense',
+    'use search autocompletion'
+  );
 }
 
 
 /**
- * Implements hook_form_alter().
+ * Implements hook_menu().
  */
-function searchsense_form_alter() {
+function searchsense_menu() {
+  $items = array();
 
+  $items['search/autocomplete'] = array(
+    'title' => 'Searchsense Autocomplete',
+    'page callback' => 'searchsense_autocomplete',
+    'access arguments' => array('use search autocompletion'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
 }
 
 
 /**
- * Autocomplete callback.
+ * Implements hook_form_search_admin_settings_alter().
  */
-function searchsense_search() {
+function searchsense_form_search_admin_settings_alter(&$form, &$form_state) {
+  $form['searchsense'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Search Autocompletion'),
+  );
 
+  $form['searchsense']['searchsense_block_search'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable autocompletion for search block.'),
+    '#default_value' => variable_get('searchsense_block_search', 1),
+    '#return_value' => 1,
+  );
+
+  $form['searchsense']['searchsense_theme_search'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable autocompletion on theme search form.'),
+    '#default_value' => variable_get('searchsense_theme_search', 1),
+    '#return_value' => 1,
+  );
+
+  $form['searchsense']['searchsense_advanced_search'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable autocompletion on advanced search form.'),
+    '#default_value' => variable_get('searchsense_advanced_search', 1),
+    '#return_value' => 1,
+  );
+
+  $form['searchsense']['searchsense_user_search'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable autocompletion on user search form.'),
+    '#default_value' => variable_get('searchsense_user_search', 1),
+    '#return_value' => 1,
+  );
+
+  $form['searchsense']['settings'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Advanced settings'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  // TODO: Add module advanced settings elements.
 }
 
 
+/**
+ * Implements hook_form_alter() for advanced search form.
+ */
+function searchsense_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'search_form' && user_access('use search autocompletion')) {
+    $type = arg(1);
+
+    if ($type == 'user' && variable_get('searchsense_user_search', 1)) {
+      $form['basic']['inline']['keys']['#autocomplete_path'] = 'user/autocomplete';
+    }
+    elseif ($type == 'node' && variable_get('searchsense_advanced_search', 1)) {
+      $form['basic']['inline']['keys']['#autocomplete_path'] = 'search/autocomplete';
+      foreach (element_children($form['advanced']['keywords']) as $key) {
+        $form['advanced']['keywords'][$key]['#autocomplete_path'] = 'search/autocomplete';
+      }
+    }
+  }
+}
+
+
+/**
+ * Implements hook_form_alter() for search block form.
+ */
+function searchsense_form_search_block_form_alter(&$form, &$form_state) {
+  if (user_access('use search autocompletion') && variable_get('searchsense_block_search', 1)) {
+    $form['search_block_form']['#autocomplete_path'] = 'search/autocomplete';
+  }
+}
+
+
+/**
+ * Implements hook_form_alter() for theme search form.
+ */
+function searchsense_form_search_theme_form_alter(&$form, &$form_state) {
+  if (user_access('use search autocompletion') && variable_get('searchsense_theme_search', 1)) {
+    $form['search_theme_form']['#autocomplete_path'] = 'search/autocomplete';
+  }
+}
+
+
+/**
+ * An extensible search autocomplete callback.
+ *
+ * @param string
+ *   The string to find results for.
+ *
+ * @return
+ *   A JSON object containing autocomplete suggestions.
+ */
+function searchsense_autocomplete($string = '') {
+  $matches = module_invoke_all('searchsense', $string);
+  return drupal_json($matches);
+}
 
