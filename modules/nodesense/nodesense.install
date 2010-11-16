@@ -1,0 +1,15 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Node Searchsense un/installtion hooks.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function nodesense_uninstall() {
+
+}
+

@@ -1,0 +1,6 @@
+; $Id$
+name = "Node Searchsense"
+description = "Implements Searchsense API to provide node related search suggestions."
+core = 6.x
+package = Searchsense
+dependencies[] = searchsense

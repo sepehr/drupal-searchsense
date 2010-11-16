@@ -1,0 +1,6 @@
+; $Id$
+name = "CCK Searchsense"
+description = "Implements Searchsense API to provide content (CCK) related search suggestions."
+core = 6.x
+package = Searchsense
+dependencies[] = searchsense

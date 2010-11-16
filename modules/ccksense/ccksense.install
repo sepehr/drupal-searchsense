@@ -1,0 +1,15 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * CCK Searchsense un/installtion hooks.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function ccksense_uninstall() {
+
+}
+

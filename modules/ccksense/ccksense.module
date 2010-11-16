@@ -1,0 +1,15 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Implementation of Searchsense API and other hooks.
+ */
+
+/**
+ * Implements hook_searchsense.
+ */
+function ccksense_searchsense($string = '') {
+  
+}
+

@@ -1,0 +1,15 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Views Searchsense un/installtion hooks.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function viewsense_uninstall() {
+
+}
+
