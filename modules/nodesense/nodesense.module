@@ -34,7 +34,7 @@ function nodesense_searchsense_settings() {
   
   $form ['nodesense'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Node Autocompletion'),
+    '#title' => t('Node Suggestions'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
