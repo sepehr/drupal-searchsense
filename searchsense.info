@@ -1,0 +1,6 @@
+; $Id$
+name = "Search Sense"
+description = "Provides extensible, configurable search autocompletion ability."
+core = 6.x
+package = Search Sense
+dependencies[] = search

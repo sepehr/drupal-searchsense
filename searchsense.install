@@ -1,0 +1,24 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Iran.tc un/installtion hooks.
+ */
+ 
+/**
+ * Implements hook_install().
+ */
+function searchsense_install() {
+  drupal_set_message(st('Searchsense has been installed. Please configure it in the <a href="!link">search settings page</a>.',
+    array('!link' => url('admin/settings/search'))
+  ));
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function search_sense_uninstall() {
+  
+}
+

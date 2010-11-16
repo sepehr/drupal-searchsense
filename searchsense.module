@@ -1,0 +1,33 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Implementation of hooks, helpers and API functions for Searchsense.
+ */
+
+/**
+ * Implements hook_perm().
+ */
+function searchsense_perm() {
+
+}
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function searchsense_form_alter() {
+
+}
+
+
+/**
+ * Autocomplete callback.
+ */
+function searchsense_search() {
+
+}
+
+
+
