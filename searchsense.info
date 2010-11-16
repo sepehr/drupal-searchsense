@@ -1,6 +1,6 @@
 ; $Id$
-name = "Search Sense API"
+name = "Searchsense API"
 description = "Provides simple, extensible, configurable search autocompletion API for other modules to hook in."
 core = 6.x
-package = Search Sense
+package = Searchsense
 dependencies[] = search
