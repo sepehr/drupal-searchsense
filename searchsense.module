@@ -42,7 +42,7 @@ function searchsense_form_search_admin_settings_alter(&$form, &$form_state) {
     '#type' => 'fieldset',
     '#title' => t('Search Autocompletion'),
   );
-
+  
   $form['searchsense']['searchsense_block_search'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable autocompletion for search block.'),
@@ -71,14 +71,20 @@ function searchsense_form_search_admin_settings_alter(&$form, &$form_state) {
     '#return_value' => 1,
   );
 
-  $form['searchsense']['settings'] = array(
+  $form['searchsense']['searchsense_limit'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of suggestions'),
+    '#default_value' => variable_get('searchsense_limit', 10),
+  );
+
+  $form['searchsense']['submodule_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Advanced settings'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
 
-  // TODO: Add module advanced settings elements.
+  $form['searchsense']['submodule_settings'] = array_merge($form['searchsense']['submodule_settings'], module_invoke_all('searchsense_settings'));
 }
 
 
@@ -132,7 +138,7 @@ function searchsense_form_search_theme_form_alter(&$form, &$form_state) {
  *   A JSON object containing autocomplete suggestions.
  */
 function searchsense_autocomplete($string = '') {
-  $matches = module_invoke_all('searchsense', $string);
+  $matches = module_invoke_all('searchsense', $string, variable_get('searchsense_limit', 10));
   return drupal_json($matches);
 }
 
