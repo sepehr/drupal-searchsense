@@ -16,6 +16,7 @@ function searchsense_admin() {
   $form['searchsense'] = array(
     '#type' => 'fieldset',
     '#title' => t('Search Autocompletion'),
+    '#weight' => 0,
   );
   
   $form['searchsense']['searchsense_options'] = array(
@@ -36,9 +37,10 @@ function searchsense_admin() {
     '#default_value' => variable_get('searchsense_limit', 10),
   );
   
-  $form['buttons']['submit'] = array(
+  $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save configuration'),
+    '#weight' => 10,
   );
   
   return $form;
