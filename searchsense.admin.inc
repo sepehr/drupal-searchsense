@@ -11,7 +11,8 @@
  */
 function searchsense_admin() {
   $form = array();
-  
+  global $_searchsense;
+
   $form['searchsense'] = array(
     '#type' => 'fieldset',
     '#title' => t('Search Autocompletion'),
@@ -20,11 +21,7 @@ function searchsense_admin() {
   $form['searchsense']['searchsense_options'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Enable autocompletion for'),
-    '#default_value' => variable_get('searchsense_options', array(
-      'user',
-      'block',
-      'theme',
-    )),
+    '#default_value' => $_searchsense,
     '#options' => array(
       'user' => t('User search form'),
       'block' => t('Search block form'),
