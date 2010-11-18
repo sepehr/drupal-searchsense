@@ -26,7 +26,7 @@ function searchsense_menu() {
   $items['admin/settings/search/autocomplete'] = array(
     'title' => 'Search Autocomplete',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('searchsense_admin_settings'),
+    'page arguments' => array('searchsense_admin'),
     'access arguments' => array('administer searchsense'),
     'file' => 'searchsense.admin.inc',
     'type' => MENU_LOCAL_TASK,

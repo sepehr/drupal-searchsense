@@ -9,7 +9,7 @@
 /**
  * Form callback for administration form.
  */
-function searchsense_admin_settings() {
+function searchsense_admin() {
   $form = array();
   
   $form['searchsense'] = array(
@@ -50,17 +50,18 @@ function searchsense_admin_settings() {
     '#title' => t('Number of suggestions'),
     '#default_value' => variable_get('searchsense_limit', 10),
   );
-
-  $form['searchsense_submodule_settings'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Advanced settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-
-  $form['searchsense_submodule_settings'] = array_merge($form['searchsense_submodule_settings'], module_invoke_all('searchsense_settings'));
   
-  return system_settings_form($form);
+  $form['buttons']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save configuration'),
+  );
+  
+  $form['buttons']['reset'] = array(
+    '#type' => 'submit',
+    '#value' => t('Reset to defaults'),
+  );
+  
+  return $form;
 }
 
 
@@ -69,7 +70,18 @@ function searchsense_admin_settings() {
  */
 function searchsense_admin_settings_validate($form, &$form_state) {
   if (!ctype_digit($form_state['values']['searchsense_limit'])) {
-    form_set_error('searchsense_limit', t('The suggestion limit value must be numeric.'));
+    form_set_error('searchsense_limit', t('The suggestion list limit value must be numeric.'));
   }
 }
+
+
+/**
+ * Submission callback for administration form.
+ */
+function searchsense_admin_settings_submit($form, &$form_state) {
+  foreach ($form_state['values']['searchsense'] as $key => $value) {
+    variable_set($key, $value);
+  }
+}
+
 
