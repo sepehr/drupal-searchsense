@@ -11,13 +11,22 @@
  */
 function nodesense_searchsense($string = '', $limit = 10) {
   $matches = array();
-  $table = variable_get('nodesense_suggest_revision_title', TRUE) ? 'node_revisions' : 'node';
+  if (!$string) {
+    return $matches;
+  }
+
+  $query = variable_get('nodesense_query', FALSE);
+  if (!$query) {
+    return $matches;
+  }
+  elseif (strpos($query, 'CURRENT') !== FALSE) {
+    global $language;
+    $query = str_replace('CURRENT', $language->language, $query);
+  }
   
-  if ($string) {
-    $results = db_query_range("SELECT title FROM {$table} WHERE title LIKE '%s%%'", $string, 0, (int) $limit);
-    while ($result = db_fetch_object($results)) {
-      $matches[$result->title] = check_plain($result->title);
-    }
+  $results = db_query_range($query, $string, 0, (int) $limit);
+  while ($result = db_fetch_object($results)) {
+    $matches[$result->title] = check_plain($result->title);
   }
 
   return $matches;
@@ -25,20 +34,22 @@ function nodesense_searchsense($string = '', $limit = 10) {
 
 
 /**
- * Implements hook_searchsense_settings.
+ * Implements hook_form_searchsense_admin_alter.
  *
- * @todo Add descriptions.
+ * @todo Add field descriptions.
  */
-function nodesense_searchsense_settings() {
-  $form = array();
-  
-  $form ['nodesense'] = array(
+function nodesense_form_searchsense_admin_alter(&$form, &$form_state) {
+  $options = variable_get('nodesense_options', '');  
+
+  $form['nodesense'] = array(
     '#type' => 'fieldset',
     '#title' => t('Node Suggestions'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
+    '#weight' => 1,
   );
   
+  // General options.
   $form ['nodesense']['general'] = array(
     '#type' => 'fieldset',
     '#title' => t('General'),
@@ -49,7 +60,7 @@ function nodesense_searchsense_settings() {
   $form ['nodesense']['general']['nodesense_suggest_title'] = array(
     '#type' => 'checkbox',
     '#title' => t('Suggest node titles.'),
-    '#description' => t('You cannot disable this option.'),
+    '#description' => t('You cannot change this option.'),
     '#default_value' => 1,
     '#return_value' => 1,
     '#disabled' => TRUE,
@@ -58,24 +69,25 @@ function nodesense_searchsense_settings() {
   $form ['nodesense']['general']['nodesense_suggest_revision_title'] = array(
     '#type' => 'checkbox',
     '#title' => t('Suggest node revision titles, too.'),
-    '#default_value' => variable_get('nodesense_suggest_revision_title', 1),
+    '#default_value' => $options['nodesense_suggest_revision_title'] ? $options['nodesense_suggest_revision_title'] : 0,
     '#return_value' => 1,
   );
   
   $form ['nodesense']['general']['nodesense_left_match_title'] = array(
     '#type' => 'checkbox',
     '#title' => t('Just <em>left match</em> to find suggestions.'),
-    '#default_value' => variable_get('nodesense_left_match_title', 1),
+    '#default_value' => $options['nodesense_left_match_title'] ? $options['nodesense_left_match_title'] : 1,
     '#return_value' => 1,
   );
   
   $form ['nodesense']['general']['nodesense_suggest_unpublished'] = array(
     '#type' => 'checkbox',
     '#title' => t('Include unpublished nodes in suggestions.'),
-    '#default_value' => variable_get('nodesense_suggest_unpublished', 1),
+    '#default_value' => $options['nodesense_suggest_unpublished'] ? $options['nodesense_suggest_unpublished'] : 0,
     '#return_value' => 1,
   );
-  
+
+  // Sort options.
   $form ['nodesense']['sort'] = array(
     '#type' => 'fieldset',
     '#title' => t('Sort order'),
@@ -86,7 +98,7 @@ function nodesense_searchsense_settings() {
   $form ['nodesense']['sort']['nodesense_sort_orderby'] = array(
     '#type' => 'radios',
     '#title' => t('Sort suggestions by'),
-    '#default_value' => variable_get('nodesense_sort_orderby', 'changed'),
+    '#default_value' => $options['nodesense_sort_orderby'] ? $options['nodesense_sort_orderby'] : 'changed',
     '#options' => array(
       'changed' => t('Update date'),
       'created' => t('Creation date'),
@@ -98,13 +110,14 @@ function nodesense_searchsense_settings() {
   $form ['nodesense']['sort']['nodesense_sort_order'] = array(
     '#type' => 'radios',
     '#title' => t('Sort order'),
-    '#default_value' => variable_get('nodesense_sort_order', 'DESC'),
+    '#default_value' => $options['nodesense_sort_order'] ? $options['nodesense_sort_order'] : 'DESC',
     '#options' => array(
       'DESC' => t('Descending'),
       'ASC' => t('Ascending'),
     ),
   );
-  
+
+  // Restriction options.
   $form ['nodesense']['restrictions'] = array(
     '#type' => 'fieldset',
     '#title' => t('Restrictions'),
@@ -122,8 +135,8 @@ function nodesense_searchsense_settings() {
     '#type' => 'select',
     '#multiple' => TRUE,
     '#title' => t('Restrict suggestions to nodes in only these languages'),
-    '#default_value' => variable_get('nodesense_restrict_languages', 'all'),
-    '#options' => array('all' => 'All languages') + $tmp,
+    '#default_value' => $options['nodesense_restrict_languages'] ? $options['nodesense_restrict_languages'] : 'CURRENT',
+    '#options' => array('CURRENT' => 'Active language') + $tmp,
   );
   
   // Get a list of node types.
@@ -136,11 +149,75 @@ function nodesense_searchsense_settings() {
     '#type' => 'select',
     '#multiple' => TRUE,
     '#title' => t('Restrict suggestions to nodes of these types'),
-    '#default_value' => variable_get('nodesense_restrict_types', 'all'),
-    '#options' => array('all' => 'All types') + $tmp,
+    '#default_value' => $options['nodesense_restrict_types'] ? $options['nodesense_restrict_types'] : array_keys($tmp),
+    '#options' => $tmp,
   );
   unset($tmp);
+
+  // Validation & submission callbacks.
+  $form['#submit'][] = 'nodesense_admin_submit';
+  $form['#validate'][] = 'nodesense_admin_validate';
+}
+
+
+/**
+ * Submission callback for nodesense options.
+ */
+function nodesense_admin_submit($form, &$form_state) {
+  $opts = $form_state['values'];
+  $table = $opts['nodesense_suggest_revision_title'] ? 'nr' : 'n';
+  $query = "SELECT $table.title FROM {node} n ";
+  $like = $opts['nodesense_left_match_title'] ? "'%s%%'" : "'%%%s%%'";
+  unset($table);
   
-  return $form;
+  // Include revisions?
+  if ($opts['nodesense_suggest_revision_title']) {
+    $query .= "LEFT JOIN {node_revisions} nr ON n.nid = nr.nid
+               WHERE nr.title LIKE $like ";
+  }
+  else {
+    $query .= "WHERE n.title LIKE $like ";
+  }
+  unset($like);
+
+  // Include unpublished nodes?
+  if (!$opts['nodesense_suggest_unpublished']) {
+    $query .= 'AND n.status = 1 ';
+  }
+  
+  // Apply node type restrictions.
+  if (!empty($opts['nodesense_restrict_types'])) {
+    if (count($opts['nodesense_restrict_types']) === 1) {
+      $query .= 'AND n.type = \'' . db_escape_string(reset($opts['nodesense_restrict_types'])) . '\' ';
+    }
+    elseif ( count($opts['nodesense_restrict_types']) != count(node_get_types()) ) {
+      $query .= 'AND n.type IN (\'' . implode('\',\'', array_map('db_escape_string', $opts['nodesense_restrict_types'])) . '\') ';
+    }
+  }
+  
+  // Apply language-specific restrictions.
+  if (!empty($opts['nodesense_restrict_languages'])) {
+    if (count($opts['nodesense_restrict_languages']) === 1) {
+      $query .= 'AND n.language = \'' . db_escape_string(reset($opts['nodesense_restrict_languages'])) . '\' ';
+    }
+    elseif (count($opts['nodesense_restrict_languages']) != count(language_list()) + 1) {
+      $query .= 'AND n.language IN (\'' . implode('\',\'', array_map('db_escape_string', $opts['nodesense_restrict_languages'])) . '\') ';
+    }
+  }
+  
+  // Apply order options.
+  $query .= 'ORDER BY \'' . $opts['nodesense_sort_orderby'] . '\' ' . $opts['nodesense_sort_order'];
+  
+  // Save the options.
+  $opts = array();
+  foreach ($form_state['values'] as $key => $value) {
+    if (strpos($key, 'nodesense_') !== FALSE) {
+      $opts[$key] = $form_state['values'][$key];
+    }
+  }
+  variable_set('nodesense_options', $opts);
+  
+  // Save the built query.
+  variable_set('nodesense_query', $query);
 }
 
