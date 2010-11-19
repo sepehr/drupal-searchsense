@@ -9,7 +9,83 @@
 /**
  * Implements hook_searchsense.
  */
-function taxosense_searchsense($string = '') {
+function taxosense_searchsense($string = '', $limit = 10) {
+  $matches = $args = array();
+  if (!$string) {
+    return $matches;
+  }
+
+  $query = variable_get('taxosense_query', FALSE);
+  if (!$query) {
+    return $matches;
+  }
+
+  $args = array_fill(0, substr_count($query, '%s'), $string);
+  $results = db_query_range($query, $args, 0, (int) $limit);
+  while ($result = db_fetch_object($results)) {
+    $matches[$result->name] = check_plain($result->name);
+  }
+
+  return $matches;
+}
+
+
+/**
+ * Implements hook_form_searchsense_admin_alter.
+ */
+function taxosense_form_searchsense_admin_alter(&$form, &$form_state) {
+  $options = variable_get('taxosense_options', array('term name', 'left match'));
+
+  $form['taxosense'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Taxonomy Suggestions'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#weight' => 2,
+  );
   
+  $form['taxosense']['taxosense_options'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Choose appropriate taxonomy related suggestion options'),
+    '#default_value' => $options,
+    '#options' => array(
+      'term name' => t('Suggest taxonomy term names.'),
+      'term synonyms' => t('Suggest taxonomy term synonyms.'),
+      'term description' => t('Suggest taxonomy terms with related descriptions.'),
+      'left match' => t('Just <em>left match</em> to find suggestions.'),
+    ),
+  );
+  
+  $form['#submit'][] = 'taxosense_admin_submit';
+}
+
+
+/**
+ * Submission callback for taxosense admin settings.
+ */
+function taxosense_admin_submit($form, &$form_state) {
+  // Save options.
+  variable_set('taxosense_options', $form_state['values']['taxosense_options']);
+
+  // Build and save the query.
+  $fields = 'name';
+  $like = $form_state['values']['taxosense_options']['left match'] ? "'%s%%'" : "'%%%s%%'";
+  $fields .= $form_state['values']['taxosense_options']['term description'] ? '' : '';
+  $query = "(SELECT $fields FROM {term_data} t ";
+  unset($fields);
+  
+  // Set the WHERE clause.
+  $query .= "WHERE name LIKE $like";
+  if ($form_state['values']['taxosense_options']['term description']) {
+    $query .= " OR description LIKE $like";
+  }
+  $query .= ') ';
+  
+  // Include synonyms?
+  if ($form_state['values']['taxosense_options']['term synonyms']) {
+    $query .= "UNION (SELECT name FROM {term_synonym} WHERE name LIKE $like)";
+  }
+  
+  variable_set('taxosense_query', $query);
 }
 

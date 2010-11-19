@@ -3,4 +3,5 @@ name = "Taxonomy Searchsense"
 description = "Implements Searchsense API to provide taxonomy related search suggestions."
 core = 6.x
 package = Searchsense
+dependencies[] = taxonomy
 dependencies[] = searchsense

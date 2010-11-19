@@ -10,6 +10,7 @@
  * Implements hook_uninstall().
  */
 function taxosense_uninstall() {
-
+  variable_del('taxosense_query');
+  variable_del('taxosense_options');
 }
 
