@@ -34,7 +34,7 @@ function searchsense_admin() {
   $js_enabled = module_exists('js');
   $form['searchsense']['searchsense_use_js'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Make use of <a href="!link">High performance JS callback handler</a> <em>(recommended)</em>.',
+    '#title' => t('Make use of <a href="!link">High performance JS callback handler</a>. <em>(recommended)</em>',
       array('!link' => 'http://drupal.org/project/js')
     ),
     '#default_value' => variable_get('searchsense_use_js', FALSE),
