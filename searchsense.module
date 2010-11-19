@@ -9,7 +9,7 @@
 /**
  * Defines Searchsense's menu path.
  */
-define('SEARCHSENSE_PATH', 'search/autocomplete');
+define('SEARCHSENSE_PATH', 'searchsense/autocomplete');
 define('SEARCHSENSE_JS_PATH', 'js/searchsense/autocomplete');
 
 
