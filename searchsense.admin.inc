@@ -37,9 +37,9 @@ function searchsense_admin() {
     '#title' => t('Make use of <a href="!link">High performance JS callback handler</a>. <em>(recommended)</em>',
       array('!link' => 'http://drupal.org/project/js')
     ),
-    '#default_value' => variable_get('searchsense_use_js', FALSE),
     '#return_value' => 1,
     '#disabled' => !$js_enabled,
+    '#default_value' => $js_enabled ? variable_get('searchsense_use_js', FALSE) : 0,
   );
 
   $form['searchsense']['searchsense_limit'] = array(
@@ -64,6 +64,12 @@ function searchsense_admin() {
 function searchsense_admin_validate($form, &$form_state) {
   if (!ctype_digit($form_state['values']['searchsense_limit'])) {
     form_set_error('searchsense_limit', t('The suggestion list limit value must be numeric.'));
+  }
+
+  if ($form_state['values']['searchsense_use_js'] && !module_exists('js')) {
+    form_set_error('searchsense_use_js', t('The <a href="!link">High performance JS callback handler</a> module is not yet installed.',
+      array('!link' => 'http://drupal.org/project/js')
+    ));
   }
 }
 
