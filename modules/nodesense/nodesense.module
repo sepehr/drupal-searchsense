@@ -136,7 +136,10 @@ function nodesense_form_searchsense_admin_alter(&$form, &$form_state) {
     '#multiple' => TRUE,
     '#title' => t('Restrict suggestions to nodes in only these languages'),
     '#default_value' => $options['nodesense_restrict_languages'] ? $options['nodesense_restrict_languages'] : 'CURRENT',
-    '#options' => array('CURRENT' => 'Active language') + $tmp,
+    '#options' => array(
+      'CURRENT' => 'Active',
+      'neutral' => 'Neutral',
+    ) + $tmp,
   );
   
   // Get a list of node types.
@@ -196,6 +199,7 @@ function nodesense_admin_submit($form, &$form_state) {
   }
   
   // Apply language-specific restrictions.
+  $opts['nodesense_restrict_languages']['neutral'] = '';
   if (!empty($opts['nodesense_restrict_languages'])) {
     if (count($opts['nodesense_restrict_languages']) === 1) {
       $query .= 'AND n.language = \'' . db_escape_string(reset($opts['nodesense_restrict_languages'])) . '\' ';
