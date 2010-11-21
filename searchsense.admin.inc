@@ -91,7 +91,7 @@ function searchsense_admin_submit($form, &$form_state) {
       array('locale', 'user', 'searchsense'), module_implements('searchsense')
     ));
   }
-  
+
   // Set a message.
   drupal_set_message(t('Configuration options has been saved.'));
 }
