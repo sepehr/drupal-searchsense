@@ -31,9 +31,9 @@ function taxosense_searchsense($string = '', $limit = 10) {
 
 
 /**
- * Implements hook_form_searchsense_admin_alter.
+ * Implements hook_form_searchsense_admin_alter().
  */
-function taxosense_form_searchsense_admin_alter(&$form, &$form_state) {
+function taxosense_form_searchsense_admin_alter(&$form, $form_state) {
   $options = variable_get('taxosense_options', array('term name', 'left match'));
 
   $form['taxosense'] = array(

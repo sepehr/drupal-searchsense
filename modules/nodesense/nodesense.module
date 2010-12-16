@@ -34,11 +34,11 @@ function nodesense_searchsense($string = '', $limit = 10) {
 
 
 /**
- * Implements hook_form_searchsense_admin_alter.
+ * Implements hook_form_searchsense_admin_alter().
  *
  * @todo Add field descriptions.
  */
-function nodesense_form_searchsense_admin_alter(&$form, &$form_state) {
+function nodesense_form_searchsense_admin_alter(&$form, $form_state) {
   $options = variable_get('nodesense_options', '');  
 
   $form['nodesense'] = array(
