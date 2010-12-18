@@ -9,7 +9,7 @@
 /**
  * Implements hook_searchsense.
  */
-function viewsense_searchsense($string = '') {
+function viewsense_searchsense($a1 = '', $a2 = '', $limit = 10) {
   
 }
 

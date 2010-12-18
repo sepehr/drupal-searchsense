@@ -9,9 +9,9 @@
 /**
  * Implements hook_searchsense.
  */
-function nodesense_searchsense($string = '', $limit = 10) {
+function nodesense_searchsense($a1 = '', $a2 = '', $limit = 10) {
   $matches = array();
-  if (!$string) {
+  if (!$a1) {
     return $matches;
   }
 
@@ -24,7 +24,7 @@ function nodesense_searchsense($string = '', $limit = 10) {
     $query = str_replace('CURRENT', $language->language, $query);
   }
   
-  $results = db_query_range($query, $string, 0, (int) $limit);
+  $results = db_query_range($query, $a1, 0, (int) $limit);
   while ($result = db_fetch_object($results)) {
     $matches[$result->title] = check_plain($result->title);
   }

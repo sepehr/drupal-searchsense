@@ -9,9 +9,9 @@
 /**
  * Implements hook_searchsense.
  */
-function taxosense_searchsense($string = '', $limit = 10) {
+function taxosense_searchsense($a1 = '', $a2 = '', $limit = 10) {
   $matches = $args = array();
-  if (!$string) {
+  if (!$a1) {
     return $matches;
   }
 
@@ -20,7 +20,7 @@ function taxosense_searchsense($string = '', $limit = 10) {
     return $matches;
   }
 
-  $args = array_fill(0, substr_count($query, '%s'), $string);
+  $args = array_fill(0, substr_count($query, '%s'), $a1);
   $results = db_query_range($query, $args, 0, (int) $limit);
   while ($result = db_fetch_object($results)) {
     $matches[$result->name] = check_plain($result->name);
