@@ -159,7 +159,12 @@ function searchsense_autocomplete($a1 = '') {
   $a2 = ($a2[0] == 'js') ? array_shift($a2) : $a2;
   $a2 = (count($a2) > 3) ? $a2[2] : '';
 
+  // Get all suggestions.
   $matches = module_invoke_all('searchsense', $a1, $a2, variable_get('searchsense_limit', 10));
+
+  // Let 'em alter the suggestions.
+  drupal_alter('searchsense_matches', $matches, $a1, $a2);
+
   return drupal_json(array_filter($matches));
 }
 
