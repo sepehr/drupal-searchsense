@@ -1,0 +1,7 @@
+; $Id$
+name = "Dynamic Searchsense"
+description = "Integrates with Custom Search module's content type selection dropdown to provide dynamic type-ahead ability."
+core = 6.x
+package = Searchsense
+dependencies[] = nodesense
+dependencies[] = custom_search

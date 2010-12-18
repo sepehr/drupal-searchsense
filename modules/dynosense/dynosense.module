@@ -1,0 +1,15 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Implementation of necessary hooks and helpers dor Dynamic Searchsense.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function dynosense_menu() {
+  
+}
+
