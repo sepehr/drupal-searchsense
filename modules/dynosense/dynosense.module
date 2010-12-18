@@ -26,3 +26,10 @@ function dynosense_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_form_alter() for search block form.
+ */
+function dynosense_form_search_block_form_alter(&$form, $form_state) {
+  drupal_add_js(drupal_get_path('module', 'dynosense') . '/dynosense.js');
+}
+
