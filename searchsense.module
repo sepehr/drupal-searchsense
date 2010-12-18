@@ -36,6 +36,13 @@ function searchsense_init() {
   $GLOBALS['_searchsense']['path'] = module_exists('js') && variable_get('searchsense_use_js', FALSE) ?
     SEARCHSENSE_JS_PATH :
     SEARCHSENSE_PATH;
+
+  // Also pass the path to JS.
+  drupal_add_js(array(
+    'searchsense' => array(
+      'path' => $GLOBALS['_searchsense']['path'],
+    ),
+  ), 'setting');
 }
 
 
@@ -141,14 +148,18 @@ function searchsense_form_search_theme_form_alter(&$form, $form_state) {
 /**
  * An extensible search autocomplete callback.
  *
- * @param string
+ * @param $a1
  *   The string to find results for.
  *
  * @return
  *   A JSON object containing autocomplete suggestions.
  */
-function searchsense_autocomplete($string = '') {
-  $matches = module_invoke_all('searchsense', $string, variable_get('searchsense_limit', 10));
+function searchsense_autocomplete($a1 = '') {
+  $a2 = arg();
+  $a2 = ($a2[0] == 'js') ? array_shift($a2) : $a2;
+  $a2 = (count($a2) > 3) ? $a2[2] : '';
+
+  $matches = module_invoke_all('searchsense', $a1, $a2, variable_get('searchsense_limit', 10));
   return drupal_json(array_filter($matches));
 }
 
