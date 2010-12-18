@@ -11,16 +11,18 @@
  */
 function dynosense_menu() {
   $items = array();
-  $types = node_get_types('names');dpm($types);
+  $types = node_get_types('names');
 
-  foreach ($types as $type) {
-    $items[SEARCHSENSE_PATH . '/' . $type] =
-    $items[SEARCHSENSE_JS_PATH . '/' . $type] = array(
-      'title' => "Searchsense filtered by $type",
+  foreach ($types as $name => $nick) {
+    $items[SEARCHSENSE_PATH . '/' . $name] =
+    $items[SEARCHSENSE_JS_PATH . '/' . $name] = array(
+      'title' => "Searchsense filtered by $name",
       'page callback' => 'searchsense_autocomplete',
       'access arguments' => array('use search autocompletion'),
       'type' => MENU_CALLBACK,
     );
   }
+
+  return $items;
 }
 
