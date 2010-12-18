@@ -26,7 +26,7 @@ function nodesense_searchsense($a1 = '', $a2 = '', $limit = 10) {
   
   $results = db_query_range($query, $a1, 0, (int) $limit);
   while ($result = db_fetch_object($results)) {
-    $matches[$result->title] = check_plain($result->title);
+    $matches[$result->type . ' <=> ' . $result->title] = check_plain($result->title);
   }
 
   return $matches;
@@ -169,7 +169,7 @@ function nodesense_form_searchsense_admin_alter(&$form, $form_state) {
 function nodesense_admin_submit($form, &$form_state) {
   $opts = $form_state['values'];
   $table = $opts['nodesense_suggest_revision_title'] ? 'nr' : 'n';
-  $query = "SELECT $table.title FROM {node} n ";
+  $query = "SELECT $table.title, $table.type FROM {node} n ";
   $like = $opts['nodesense_left_match_title'] ? "'%s%%'" : "'%%%s%%'";
   unset($table);
   
@@ -222,6 +222,7 @@ function nodesense_admin_submit($form, &$form_state) {
   variable_set('nodesense_options', $opts);
   
   // Save the built query.
+  drupal_alter('nodesense_query', $query);
   variable_set('nodesense_query', $query);
 }
 
