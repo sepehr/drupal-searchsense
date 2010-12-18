@@ -10,6 +10,17 @@
  * Implements hook_menu().
  */
 function dynosense_menu() {
-  
+  $items = array();
+  $types = node_get_types('names');dpm($types);
+
+  foreach ($types as $type) {
+    $items[SEARCHSENSE_PATH . '/' . $type] =
+    $items[SEARCHSENSE_JS_PATH . '/' . $type] = array(
+      'title' => "Searchsense filtered by $type",
+      'page callback' => 'searchsense_autocomplete',
+      'access arguments' => array('use search autocompletion'),
+      'type' => MENU_CALLBACK,
+    );
+  }
 }
 
