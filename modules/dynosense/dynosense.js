@@ -8,6 +8,8 @@
 
 /**
  * Dynamically changes the searchsense autocompletion path in a search block.
+ *
+ * @todo Fix/Improve!
  */
 Drupal.behaviors.dynosense = function(context) {
   var newPath = Drupal.settings.basePath,
