@@ -23,10 +23,15 @@ function nodesense_searchsense($a1 = '', $a2 = '', $limit = 10) {
     global $language;
     $query = str_replace('CURRENT', $language->language, $query);
   }
-  
+
   $results = db_query_range($query, $a1, 0, (int) $limit);
   while ($result = db_fetch_object($results)) {
-    $matches[$result->type . ' // ' . $result->title] = check_plain($result->title);
+    if (count(module_implements('searchsense_alter'))) {
+      $matches[$result->type][$result->title] = check_plain($result->title);
+    }
+    else {
+      $matches[$result->title] = check_plain($result->title);
+    }
   }
 
   return $matches;
