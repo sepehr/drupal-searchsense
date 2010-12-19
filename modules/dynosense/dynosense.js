@@ -25,12 +25,24 @@ Drupal.behaviors.dynosense = function(context, $types, $sense, $sensePath) {
   var $types = $types || $('#edit-custom-search-types'),
       $sense = $sense || $('#edit-search-block-form-1'),
       $sensePath = $sensePath || $('#edit-search-block-form-1-autocomplete'),
-      nodeType = $types.val().substr(2);
+      lookupType = $types.val().substr(2);
 
-  // Set the new path.
-  var newPath = (nodeType == 'all') ?
-    Drupal.settings.basePath + Drupal.settings.searchsense.path :
-    Drupal.settings.basePath + Drupal.settings.searchsense.path + '/' + nodeType;
+  // Find the new path.
+  var newPath = Drupal.settings.basePath;
+  switch (lookupType) {
+    case 'all':
+      newPath += Drupal.settings.searchsense.path;
+      break;
+
+    case 'user':
+      newPath += 'user/autocomplete';
+      break;
+
+    default:
+      newPath = Drupal.settings.searchsense.path + '/' + lookupType;
+  }
+
+  // Set it.
   $sensePath
     .val(newPath)
     .removeClass('autocomplete-processed');
@@ -43,7 +55,7 @@ Drupal.behaviors.dynosense = function(context, $types, $sense, $sensePath) {
   // Reattach the autocomplete behavior.
   Drupal.behaviors.autocomplete(document);
 
-  // Return the new path for the sake of glotha throbe!
+  // And return the new path.
   return newPath;
 };
 
