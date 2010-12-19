@@ -37,7 +37,7 @@ function searchsense_init() {
     SEARCHSENSE_JS_PATH :
     SEARCHSENSE_PATH;
 
-  // Also pass the path to JS.
+  // Also expose the path to JS.
   drupal_add_js(array(
     'searchsense' => array(
       'path' => $GLOBALS['_searchsense']['path'],
@@ -171,6 +171,10 @@ function searchsense_autocomplete($a1 = '') {
   drupal_alter('searchsense', $matches, $a1, $a2);
 
   // Return the JSON object.
-  return drupal_json(array_filter($matches));
+  if (is_array($matches)) {
+    $matches = array_filter($matches);
+  }
+
+  return drupal_json($matches);
 }
 
