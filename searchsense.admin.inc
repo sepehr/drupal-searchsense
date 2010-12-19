@@ -73,8 +73,8 @@ function searchsense_admin_validate($form, &$form_state) {
     form_set_error('searchsense_limit', t('The suggestion list limit value must be numeric.'));
   }
 
-  if (!ctype_digit($form_state['values']['searchsense_min'])) {
-    form_set_error('searchsense_min', t('The minimum characters value must be numeric.'));
+  if (!ctype_digit($form_state['values']['searchsense_min']) || intval($form_state['values']['searchsense_min']) < 1) {
+    form_set_error('searchsense_min', t('The minimum characters must be numeric value greater than 1.'));
   }
 
   if ($form_state['values']['searchsense_use_js'] && !module_exists('js')) {

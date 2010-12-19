@@ -30,7 +30,7 @@ function searchsense_perm() {
 function searchsense_init() {
   // Load searchsense options once per request.
   $GLOBALS['_searchsense'] = variable_get('searchsense_configs', array(
-    'min' => 2,
+    'min' => 1,
     'limit' => 10,
     'use_js' => 0,
     'options' => array('user', 'block', 'theme'),
@@ -167,7 +167,7 @@ function searchsense_autocomplete($a1 = '', $a2 = '') {
   // Check if the second argument is available.
   if (!empty($a2)) {
     // Skip short strings.
-    if ($_searchsense['min'] && !isset($a2[$_searchsense['min']])) {
+    if (!isset($a2[$_searchsense['min']])) {
       return array();
     }
 
@@ -175,7 +175,7 @@ function searchsense_autocomplete($a1 = '', $a2 = '') {
   }
   else {
     // Skip short strings.
-    if ($_searchsense['min'] && !isset($a1[$_searchsense['min']])) {
+    if (!isset($a1[$_searchsense['min']])) {
       return array();
     }
 
