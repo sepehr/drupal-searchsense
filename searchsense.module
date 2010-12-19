@@ -167,7 +167,7 @@ function searchsense_autocomplete($a1 = '', $a2 = '') {
   // Check if the second argument is available.
   if (!empty($a2)) {
     // Skip short strings.
-    if (!isset($a2[$_searchsense['min']])) {
+    if ($_searchsense['min'] && !isset($a2[$_searchsense['min']])) {
       return array();
     }
 
@@ -175,7 +175,7 @@ function searchsense_autocomplete($a1 = '', $a2 = '') {
   }
   else {
     // Skip short strings.
-    if (!isset($a1[$_searchsense['min']])) {
+    if ($_searchsense['min'] && !isset($a1[$_searchsense['min']])) {
       return array();
     }
 
