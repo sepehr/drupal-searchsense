@@ -55,7 +55,7 @@ function searchsense_js() {
   $callbacks['autocomplete'] = array(
     'callback' => 'searchsense_autocomplete',
     'dependencies' => variable_get('searchsense_js_deps',
-      array('locale', 'user', 'searchsense', 'nodesense')
+      array('user', 'searchsense', 'nodesense')
     ),
   );
 
@@ -149,20 +149,27 @@ function searchsense_form_search_theme_form_alter(&$form, $form_state) {
  * An extensible search autocomplete callback.
  *
  * @param $a1
- *   The string to find results for.
+ *   Either a string to find results for or the second
+ *   argument needed when using js.php and dynosense.
+ * @param $a2
+ *   If set, it's the string to find results for, and
+ *   surely dynosense is making use of js.php right now!
  *
  * @return
  *   A JSON object containing autocomplete suggestions.
  */
-function searchsense_autocomplete($a1 = '') {
-  $a2 = arg();
-  if ($a2[0] == 'js') {
-    array_shift($a2);
+function searchsense_autocomplete($a1 = '', $a2 = '') {
+  // Check if the second argument is available.
+  if (!empty($a2)) {
+    list($a1, $a2) = array($a2, $a1);
   }
-
-  // If there's another argument passed
-  // deviously via the URL, pass it through.
-  $a2 = (count($a2) > 3) ? $a2[2] : '';
+  else {
+    $a2 = arg();
+    if ($a2[0] == 'js') {
+      array_shift($a2);
+    }
+    $a2 = (count($a2) > 3) ? $a2[2] : '';
+  }
 
   // Get all suggestions.
   $matches = module_invoke_all('searchsense', $a1, $a2, variable_get('searchsense_limit', 10));
