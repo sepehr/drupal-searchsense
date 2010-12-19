@@ -88,7 +88,7 @@ function searchsense_admin_submit($form, &$form_state) {
   // TODO: Add submodules dependencies, e.g. views, taxonomy, etc.
   if ($form_state['values']['searchsense_use_js']) {
     variable_set('searchsense_js_deps', array_merge(
-      array('locale', 'user', 'searchsense'),
+      array('user', 'searchsense'),
       module_implements('searchsense'),
       module_implements('searchsense_alter')
     ));
