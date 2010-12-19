@@ -166,9 +166,19 @@ function searchsense_autocomplete($a1 = '', $a2 = '') {
 
   // Check if the second argument is available.
   if (!empty($a2)) {
+    // Skip short strings.
+    if (!isset($a2[$_searchsense['min']])) {
+      return array();
+    }
+
     list($a1, $a2) = array($a2, $a1);
   }
   else {
+    // Skip short strings.
+    if (!isset($a1[$_searchsense['min']])) {
+      return array();
+    }
+
     $a2 = arg();
     if ($a2[0] == 'js') {
       array_shift($a2);
