@@ -45,7 +45,7 @@ function dynosense_searchsense_alter($matches, $a1 = '', $a2 = '') {
   }
 
   foreach ($matches as $key => $value) {
-    list($type, $title) = explode(' <=> ', $key);
+    list($type, $title) = explode(' // ', $key);
     if ($type != $a2) {
       unset($matches[$key]);
     }
