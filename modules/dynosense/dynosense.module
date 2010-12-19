@@ -36,19 +36,14 @@ function dynosense_form_search_block_form_alter(&$form, $form_state) {
 
 /**
  * Implements hook_searchsense_alter().
- *
- * @todo Fix/Improve!
  */
-function dynosense_searchsense_alter($matches, $a1 = '', $a2 = '') {
-  if (!isset($a2) || empty($a2)) {
-    return;
+function dynosense_searchsense_alter(&$matches, $a1 = '', $a2 = '') {
+  if (!empty($a2)) {
+    $matches = is_array($matches[$a2]) ? $matches[$a2] : array();
   }
 
-  foreach ($matches as $key => $value) {
-    list($type, $title) = explode(' // ', $key);
-    if ($type != $a2) {
-      unset($matches[$key]);
-    }
+  if (count($matches, COUNT_RECURSIVE) != count($matches)) {
+    $matches = array_pop($matches);
   }
 }
 
