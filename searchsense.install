@@ -10,8 +10,8 @@
  * Implements hook_install().
  */
 function searchsense_install() {
-  drupal_set_message(st('Searchsense has been installed. You can configure it via the <a href="!link">search settings</a> page.',
-    array('!link' => url('admin/settings/search'))
+  drupal_set_message(st('Searchsense has been installed. You can configure it in the <a href="!link">search autocomplete settings</a>.',
+    array('!link' => url('admin/settings/search/autocomplete'))
   ));
 }
 
