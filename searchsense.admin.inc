@@ -31,16 +31,28 @@ function searchsense_admin() {
     ),
   );
 
-  $js_enabled = module_exists('js');
+  $enabled = module_exists('accents');
+  $form['searchsense']['searchsense_remove_accents'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Make use of <a href="!link">Accents</a> module to remove accents from keywords.',
+      array('!link' => 'http://drupal.org/project/accents')
+    ),
+    '#return_value' => 1,
+    '#disabled' => !$enabled,
+    '#default_value' => $enabled ? $_searchsense['remove_accents'] : 0,
+  );
+
+  $enabled = module_exists('js');
   $form['searchsense']['searchsense_use_js'] = array(
     '#type' => 'checkbox',
     '#title' => t('Make use of <a href="!link">High performance JS callback handler</a>. <em>(recommended)</em>',
       array('!link' => 'http://drupal.org/project/js')
     ),
     '#return_value' => 1,
-    '#disabled' => !$js_enabled,
-    '#default_value' => $js_enabled ? $_searchsense['use_js'] : 0,
+    '#disabled' => !$enabled,
+    '#default_value' => $enabled ? $_searchsense['use_js'] : 0,
   );
+  unset($enabled);
 
   $form['searchsense']['searchsense_limit'] = array(
     '#type' => 'textfield',
@@ -82,6 +94,12 @@ function searchsense_admin_validate($form, &$form_state) {
       array('!link' => 'http://drupal.org/project/js')
     ));
   }
+
+  if ($form_state['values']['searchsense_remove_accents'] && !module_exists('accents')) {
+    form_set_error('searchsense_remove_accents', t('The <a href="!link">Accents</a> module is not yet installed.',
+      array('!link' => 'http://drupal.org/project/accents')
+    ));
+  }
 }
 
 
@@ -94,17 +112,24 @@ function searchsense_admin_submit($form, &$form_state) {
     'limit' => $form_state['values']['searchsense_limit'],
     'use_js' => $form_state['values']['searchsense_use_js'],
     'options' => $form_state['values']['searchsense_options'],
+    'remove_accents' => $form_state['values']['searchsense_remove_accents'],
   ));
 
   // Presave searchsense js.module bootstrap
   // dependencies, since we cannot catch the searchsense
   // API implementers when the hook_js() gets triggered.
   if ($form_state['values']['searchsense_use_js']) {
-    variable_set('searchsense_js_deps', array_merge(
+    $dependencies = array_merge(
       array('user', 'searchsense'),
       module_implements('searchsense'),
       module_implements('searchsense_alter')
-    ));
+    );
+
+    // Add accents dependency if enabled.
+    if ($form_state['values']['searchsense_remove_accents']) {
+      $dependencies[] = 'accents';
+    }
+    variable_set('searchsense_js_deps', $dependencies);
   }
 
   // Set a message.
