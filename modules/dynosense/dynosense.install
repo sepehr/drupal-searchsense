@@ -13,11 +13,3 @@ function dynosense_install() {
 
 }
 
-
-/**
- * Implements hook_uninstall().
- */
-function dynosense_uninstall() {
-
-}
-
