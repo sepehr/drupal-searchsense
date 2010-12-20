@@ -19,10 +19,7 @@ function searchsense_install() {
  * Implements hook_uninstall().
  */
 function searchsense_uninstall() {
-  variable_get('searchsense_limit');
-  variable_get('searchsense_user_search');
-  variable_get('searchsense_theme_search');
-  variable_get('searchsense_block_search');
-  variable_get('searchsense_advanced_search');
+  variable_get('searchsense_configs');
+  variable_get('searchsense_js_deps');
 }
 
