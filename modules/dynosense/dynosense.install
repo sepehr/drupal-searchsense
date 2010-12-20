@@ -3,13 +3,15 @@
 
 /**
  * @file
- * Views Searchsense un/installtion hooks.
+ * Dynamic Searchsense un/installtion hooks.
  */
 
 /**
- * Implements hook_install().
+ * Implements hook_enable().
  */
-function dynosense_install() {
-
+function dynosense_enable() {
+  drupal_set_message(st('Dynamic Searchsense has been installed. There is no administration interface but this will be integrated with <a href="!link">Custom Search Content Selector</a> henceforth.',
+    array('!link' => url('admin/settings/custom_search/content'))
+  ));
 }
 
