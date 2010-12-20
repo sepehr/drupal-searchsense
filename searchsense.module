@@ -33,7 +33,6 @@ function searchsense_init() {
     'min' => 1,
     'limit' => 10,
     'use_js' => FALSE,
-    'remove_accents' => FALSE,
     'options' => array('user', 'block', 'theme'),
   ));
 
@@ -185,11 +184,6 @@ function searchsense_autocomplete($a1 = '', $a2 = '') {
       array_shift($a2);
     }
     $a2 = (count($a2) > 3) ? $a2[2] : '';
-  }
-
-  // Remove accents or not?
-  if ($_searchsense['remove_accents']) {
-    $a1 = _accents_remove_accents($a1);
   }
 
   // Get all suggestions.
