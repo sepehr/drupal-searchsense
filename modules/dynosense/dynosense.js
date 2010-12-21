@@ -7,12 +7,18 @@
  */
 
 /**
- * Dynamically changes the searchsense autocompletion path.
+ * Defines dynosense mother object.
+ */
+Drupal.dynosense = Drupal.dynosense || {};
+
+
+/**
+ * Dynamically updates the searchsense autocompletion path.
  *
  * @param context
  *   Context!
- * @param $types
- *   jQuery object of content types dropdown element.
+ * @param $typeSelector
+ *   jQuery object of custom search type selector.
  * @param $sense
  *   jQuery object of searchsense textfield.
  * @param $sensePath
@@ -21,14 +27,10 @@
  * @return
  *   The new path for searchsense.
  */
-Drupal.behaviors.dynosense = function(context, $types, $sense, $sensePath) {
-  var $types = $types || $('#edit-custom-search-types'),
-      $sense = $sense || $('#edit-search-block-form-1'),
-      $sensePath = $sensePath || $('#edit-search-block-form-1-autocomplete'),
-      lookupType = $types.val().substr(2);
+Drupal.dynosense.updatePath = function(context, $typeSelector, $sense, $sensePath) {
+  var newPath = Drupal.settings.basePath,
+      lookupType = $typeSelector.val().substr(2);
 
-  // Find the new path.
-  var newPath = Drupal.settings.basePath;
   switch (lookupType) {
     case 'all':
       newPath += Drupal.settings.searchsense.path;
@@ -61,16 +63,22 @@ Drupal.behaviors.dynosense = function(context, $types, $sense, $sensePath) {
 
 
 /**
- * Binds dynosense!
+ * Binds and performs dynosense.updatePath() where required.
  */
-Drupal.behaviors.dynosenseBinder = function(context) {
-  var $types = $('#edit-custom-search-types'),
-      $sense = $('#edit-search-block-form-1'),
-      $sensePath = $('#edit-search-block-form-1-autocomplete');
+Drupal.behaviors.dynosense = function(context) {
+  $('.custom-search-types').each(function() {
+    var $this = $(this),
+        $sense =  $this.parents('form').find('.form-autocomplete'),
+        $sensePath = $sense.parent().next('.autocomplete');
 
-  $types.bind('change', function() {
-    $sense.trigger('focus');
-    Drupal.behaviors.dynosense(context, $types, $sense, $sensePath);
+    // Perform on document ready.
+    Drupal.dynosense.updatePath(context, $this, $sense, $sensePath);
+
+    // And on change.
+    $this.bind('change', function() {
+      Drupal.dynosense.updatePath(context, $this, $sense, $sensePath);
+      $sense.trigger('focus');
+    });
   });
 };
 
