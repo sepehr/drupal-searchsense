@@ -40,15 +40,15 @@ Drupal.behaviors.triggersense = function(context) {
     $this.unbind('keypress')
       .bind('keypress', function(e) {
         if (e.keyCode == 13) {
-          Drupal.triggersense.delayedSubmit($this.parent('form'));
+          Drupal.triggersense.delayedSubmit($this.parents('form'));
         }
       });
 
     // Click submission trigger.
-    $this.parent('form')
+    $this.parents('form')
       .find('#autocomplete li')
       .bind('click', function(e) {
-        Drupal.triggersense.delayedSubmit($this.parent('form'));
+        Drupal.triggersense.delayedSubmit($this.parents('form'));
       });
   });
 };
