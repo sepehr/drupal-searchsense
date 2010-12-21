@@ -32,7 +32,7 @@ Drupal.triggersense.delayedSubmit = function($form) {
  * Alters autocomplete fields behavior to accept Click/Enter events.
  */
 Drupal.behaviors.triggersense = function(context) {
-  $('.form-autocomplete').each(function() {
+  $(context).find('.form-autocomplete').each(function() {
     // Preserve this.
     var $this = $(this);
 

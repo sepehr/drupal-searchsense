@@ -66,7 +66,7 @@ Drupal.dynosense.updatePath = function(context, $typeSelector, $sense, $sensePat
  * Binds and performs dynosense.updatePath() where required.
  */
 Drupal.behaviors.dynosense = function(context) {
-  $('.custom-search-types').each(function() {
+  $(context).find('.custom-search-types').each(function() {
     var $this = $(this),
         $sense =  $this.parents('form').find('.form-autocomplete'),
         $sensePath = $sense.parent().next('.autocomplete');
