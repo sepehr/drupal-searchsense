@@ -37,7 +37,8 @@ Drupal.behaviors.triggersense = function(context) {
     var $this = $(this);
 
     // Enter key submission trigger.
-    $this.unbind('keypress')
+    $this
+      .unbind('keypress')
       .bind('keypress', function(e) {
         if (e.keyCode == 13) {
           Drupal.triggersense.delayedSubmit($this.parents('form'));
@@ -45,7 +46,8 @@ Drupal.behaviors.triggersense = function(context) {
       });
 
     // Click submission trigger.
-    $this.parents('form')
+    $this
+      .parents('form')
       .find('#autocomplete li')
       .bind('click', function(e) {
         Drupal.triggersense.delayedSubmit($this.parents('form'));
