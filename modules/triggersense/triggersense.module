@@ -1,0 +1,15 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Searchsense Trigger's implementation of necessary hooks and helpers.
+ */
+
+/**
+ * Implements hook_???().
+ */
+function triggersense_???() {
+
+}
+

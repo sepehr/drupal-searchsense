@@ -1,0 +1,5 @@
+; $Id$
+name = "Searchsense Click/Enter Trigger"
+description = "Enables user to submit a autocomplete form by clicking on suggestions or hitting Enter."
+core = 6.x
+package = Searchsense

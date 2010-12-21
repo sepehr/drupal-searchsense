@@ -1,0 +1,15 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Searchsense Trigger un/installtion hooks.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function triggersense_enable() {
+  
+}
+
