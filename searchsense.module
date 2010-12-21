@@ -95,12 +95,18 @@ function searchsense_menu_alter($items) {
 
 
 /**
- * Implements hook_form_alter() for advanced search form.
+ * Implements hook_form_alter().
  */
 function searchsense_form_alter(&$form, $form_state, $form_id) {
-  if ($form_id == 'search_form' && user_access('use search autocompletion')) {
+  if (!user_access('use search autocompletion')) {
+    return;
+  }
+
+  //Load configs.
+  $configs = _searchsense_configs();
+
+  if ($form_id == 'search_form') {
     $type = arg(1);
-    $configs = _searchsense_configs();
 
     if ($type == 'user' && $configs['options']['user']) {
       $form['basic']['inline']['keys']['#autocomplete_path'] = 'user/autocomplete';
@@ -112,28 +118,10 @@ function searchsense_form_alter(&$form, $form_state, $form_id) {
       }
     }
   }
-}
-
-
-/**
- * Implements hook_form_alter() for search block form.
- */
-function searchsense_form_search_block_form_alter(&$form, $form_state) {
-  $configs = _searchsense_configs();
-
-  if (user_access('use search autocompletion') && $configs['options']['block']) {
+  elseif ($form_id == 'search_block_form' && $configs['options']['block']) {
     $form['search_block_form']['#autocomplete_path'] = $configs['path'];
   }
-}
-
-
-/**
- * Implements hook_form_alter() for theme search form.
- */
-function searchsense_form_search_theme_form_alter(&$form, $form_state) {
-  $configs = _searchsense_configs();
-
-  if (user_access('use search autocompletion') && $configs['options']['theme']) {
+  elseif ($form_id == 'search_theme_form' && $configs['options']['theme']) {
     $form['search_theme_form']['#autocomplete_path'] = $configs['path'];
   }
 }
