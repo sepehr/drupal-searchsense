@@ -39,7 +39,7 @@ Drupal.behaviors.dynosense = function(context, $types, $sense, $sensePath) {
       break;
 
     default:
-      newPath = Drupal.settings.searchsense.path + '/' + lookupType;
+      newPath += Drupal.settings.searchsense.path + '/' + lookupType;
   }
 
   // Set it.
