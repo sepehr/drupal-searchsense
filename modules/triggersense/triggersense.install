@@ -10,6 +10,6 @@
  * Implements hook_enable().
  */
 function triggersense_enable() {
-  
+  drupal_set_message(st('Searchsense Click/Enter trigger has been enabled. There is no administration interface but autocomplete fields behavior has been changed.'));
 }
 
