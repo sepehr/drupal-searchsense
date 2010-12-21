@@ -3,13 +3,13 @@
 
 /**
  * @file
- * Searchsense Trigger's implementation of necessary hooks and helpers.
+ * Searchsense Trigger implementation of necessary hooks and helpers.
  */
 
 /**
- * Implements hook_???().
+ * Implements hook_init().
  */
-function triggersense_???() {
-
+function triggersense_init() {
+  drupal_add_js(drupal_get_path('module', 'triggersense') . '/triggersense.js');
 }
 
