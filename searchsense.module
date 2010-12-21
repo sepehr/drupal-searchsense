@@ -28,22 +28,13 @@ function searchsense_perm() {
  * Implements hook_init().
  */
 function searchsense_init() {
-  // Load searchsense options once per request.
-  $GLOBALS['_searchsense'] = variable_get('searchsense_configs', array(
-    'min' => 1,
-    'limit' => 10,
-    'use_js' => FALSE,
-    'options' => array('user', 'block', 'theme'),
-  ));
-
-  $GLOBALS['_searchsense']['path'] = module_exists('js') && $GLOBALS['_searchsense']['use_js'] ?
-    SEARCHSENSE_JS_PATH :
-    SEARCHSENSE_PATH;
+  // Load configs.
+  $configs = _searchsense_configs();
 
   // Also expose the path to JS.
   drupal_add_js(array(
     'searchsense' => array(
-      'path' => $GLOBALS['_searchsense']['path'],
+      'path' => $configs['path'],
     ),
   ), 'setting');
 }
@@ -109,15 +100,15 @@ function searchsense_menu_alter($items) {
 function searchsense_form_alter(&$form, $form_state, $form_id) {
   if ($form_id == 'search_form' && user_access('use search autocompletion')) {
     $type = arg(1);
-    global $_searchsense;
+    $configs = _searchsense_configs();
 
-    if ($type == 'user' && $_searchsense['options']['user']) {
+    if ($type == 'user' && $configs['options']['user']) {
       $form['basic']['inline']['keys']['#autocomplete_path'] = 'user/autocomplete';
     }
-    elseif ($type == 'node' && $_searchsense['options']['advanced']) {
-      $form['basic']['inline']['keys']['#autocomplete_path'] = $_searchsense['path'];
+    elseif ($type == 'node' && $configs['options']['advanced']) {
+      $form['basic']['inline']['keys']['#autocomplete_path'] = $configs['path'];
       foreach (element_children($form['advanced']['keywords']) as $key) {
-        $form['advanced']['keywords'][$key]['#autocomplete_path'] = $_searchsense['path'];
+        $form['advanced']['keywords'][$key]['#autocomplete_path'] = $configs['path'];
       }
     }
   }
@@ -128,10 +119,10 @@ function searchsense_form_alter(&$form, $form_state, $form_id) {
  * Implements hook_form_alter() for search block form.
  */
 function searchsense_form_search_block_form_alter(&$form, $form_state) {
-  global $_searchsense;
+  $configs = _searchsense_configs();
 
-  if (user_access('use search autocompletion') && $_searchsense['options']['block']) {
-    $form['search_block_form']['#autocomplete_path'] = $_searchsense['path'];
+  if (user_access('use search autocompletion') && $configs['options']['block']) {
+    $form['search_block_form']['#autocomplete_path'] = $configs['path'];
   }
 }
 
@@ -140,10 +131,10 @@ function searchsense_form_search_block_form_alter(&$form, $form_state) {
  * Implements hook_form_alter() for theme search form.
  */
 function searchsense_form_search_theme_form_alter(&$form, $form_state) {
-  global $_searchsense;
+  $configs = _searchsense_configs();
 
-  if (user_access('use search autocompletion') && $_searchsense['options']['theme']) {
-    $form['search_theme_form']['#autocomplete_path'] = $_searchsense['path'];
+  if (user_access('use search autocompletion') && $configs['options']['theme']) {
+    $form['search_theme_form']['#autocomplete_path'] = $configs['path'];
   }
 }
 
@@ -162,12 +153,12 @@ function searchsense_form_search_theme_form_alter(&$form, $form_state) {
  *   A JSON object containing autocomplete suggestions.
  */
 function searchsense_autocomplete($a1 = '', $a2 = '') {
-  global $_searchsense;
+  $configs = _searchsense_configs();
 
   // Check if the second argument is available.
   if (!empty($a2)) {
     // Skip short strings.
-    if (!isset($a2[$_searchsense['min']])) {
+    if (!isset($a2[$configs['min']])) {
       return array();
     }
 
@@ -175,7 +166,7 @@ function searchsense_autocomplete($a1 = '', $a2 = '') {
   }
   else {
     // Skip short strings.
-    if (!isset($a1[$_searchsense['min']])) {
+    if (!isset($a1[$configs['min']])) {
       return array();
     }
 
@@ -187,7 +178,7 @@ function searchsense_autocomplete($a1 = '', $a2 = '') {
   }
 
   // Get all suggestions.
-  $matches = module_invoke_all('searchsense', $a1, $a2, $_searchsense['limit']);
+  $matches = module_invoke_all('searchsense', $a1, $a2, $configs['limit']);
 
   // Let 'em alter the suggestions.
   drupal_alter('searchsense', $matches, $a1, $a2);
@@ -198,5 +189,27 @@ function searchsense_autocomplete($a1 = '', $a2 = '') {
   }
 
   return drupal_json($matches);
+}
+
+
+/**
+ * Helper function to get module configs.
+ *
+ * @return
+ *   An array of searchsense configs.
+ */
+function _searchsense_configs() {
+  $configs = variable_get('searchsense_configs', array(
+    'min' => 1,
+    'limit' => 10,
+    'use_js' => FALSE,
+    'options' => array('user', 'block', 'theme'),
+  ));
+
+  $configs['path'] = module_exists('js') && $configs['use_js'] ?
+    SEARCHSENSE_JS_PATH :
+    SEARCHSENSE_PATH;
+
+  return $configs;
 }
 

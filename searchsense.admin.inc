@@ -11,7 +11,7 @@
  */
 function searchsense_admin() {
   $form = array();
-  global $_searchsense;
+  $configs = _searchsense_configs();
 
   $form['searchsense'] = array(
     '#type' => 'fieldset',
@@ -22,7 +22,7 @@ function searchsense_admin() {
   $form['searchsense']['searchsense_options'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Enable autocompletion for'),
-    '#default_value' => $_searchsense['options'],
+    '#default_value' => $configs['options'],
     '#options' => array(
       'user' => t('User search form'),
       'block' => t('Search block form'),
@@ -39,21 +39,21 @@ function searchsense_admin() {
     ),
     '#return_value' => 1,
     '#disabled' => !$enabled,
-    '#default_value' => $enabled ? $_searchsense['use_js'] : 0,
+    '#default_value' => $enabled ? $configs['use_js'] : 0,
   );
   unset($enabled);
 
   $form['searchsense']['searchsense_limit'] = array(
     '#type' => 'textfield',
     '#title' => t('Number of suggestions'),
-    '#default_value' => $_searchsense['limit'],
+    '#default_value' => $configs['limit'],
   );
 
   $form['searchsense']['searchsense_min'] = array(
     '#type' => 'textfield',
     '#title' => t('Minimum number of characters'),
     '#description' => t('Minimum number of characters to show suggestions for.'),
-    '#default_value' => $_searchsense['min'] + 1,
+    '#default_value' => $configs['min'] + 1,
   );
 
   $form['submit'] = array(
