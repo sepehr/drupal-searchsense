@@ -4,6 +4,10 @@
 /**
  * @file
  * Implementation of Searchsense API and other hooks.
+ *
+ * @todo
+ * - Use selective vocabularies.
+ * - Custom suggestion entry prefix and suffix.
  */
 
 /**
@@ -15,18 +19,20 @@ function taxosense_searchsense($a1 = '', $a2 = '', $limit = 10) {
     return $matches;
   }
 
+  // Get query template.
   $query = variable_get('taxosense_query', FALSE);
   if (!$query) {
     return $matches;
   }
-
-  $args = array_fill(0, substr_count($query, '%s'), $a1);
+  // Replace query placeholders.
+  $args = array_fill(0, substr_count($query, '%s'), db_escape_string($a1));
+  // Query and walk through the results.
   $results = db_query_range($query, $args, 0, (int) $limit);
   while ($result = db_fetch_object($results)) {
     $matches[$result->name] = check_plain($result->name);
   }
 
-  return $matches;
+  return array('taxosense' => $matches);
 }
 
 /**
