@@ -12,5 +12,7 @@
 function taxosense_uninstall() {
   variable_del('taxosense_query');
   variable_del('taxosense_options');
+  variable_del('taxosense_prefix');
+  variable_del('taxosense_suffix');
 }
 
