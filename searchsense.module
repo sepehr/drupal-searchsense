@@ -131,7 +131,7 @@ function searchsense_form_alter(&$form, $form_state, $form_id) {
  *   argument needed when using js.php and dynosense.
  * @param $a2
  *   If set, it's the string to find results for, and
- *   surely dynosense is making use of js.php right now!
+ *   dynosense is making use of js.php for sure.
  *
  * @return
  *   A JSON object containing autocomplete suggestions.
