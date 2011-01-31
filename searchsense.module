@@ -18,12 +18,15 @@ define('SEARCHSENSE_JS_PATH', 'js/searchsense/autocomplete');
 function searchsense_perm() {
   return array(
     'administer searchsense',
-    'use search autocompletion'
+    'use search autocompletion',
   );
 }
 
 /**
  * Implements hook_init().
+ *
+ * @todo
+ *   Do so in proper form_alter hooks.
  */
 function searchsense_init() {
   // Load configs.
@@ -168,12 +171,12 @@ function searchsense_autocomplete($a1 = '', $a2 = '') {
     $matches = array_filter($matches);
   }
 
-  // And return results JSON object.
-  return drupal_json($matches);
+  // Flatten the matches array & return its JSON object.
+  return drupal_json(_searchsense_array_flatten($matches));
 }
 
 /**
- * Helper function to get module configs.
+ * Helper function to load module configs.
  *
  * @return
  *   An array of searchsense configs.
@@ -191,5 +194,31 @@ function _searchsense_configs() {
     SEARCHSENSE_PATH;
 
   return $configs;
+}
+
+/**
+ * Helper function to convert a 2D array into a linear one.
+ *
+ * @param $array
+ *   2D array.
+ *
+ * @return
+ *   Corresponding linear array.
+ */
+function _searchsense_array_flatten($array) {
+  if (!is_array($array)) {
+    return $array;
+  }
+
+  $linear = array();
+  foreach ($array as $key => $value) {
+    if (is_array($value)) {
+      $linear = array_merge($linear, _searchsense_array_flatten($value));
+    }
+    else {
+      $linear[$key] = $value;
+    }
+  }
+  return $linear;
 }
 
