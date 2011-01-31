@@ -28,8 +28,15 @@ function taxosense_searchsense($a1 = '', $a2 = '', $limit = 10) {
   $args = array_fill(0, substr_count($query, '%s'), db_escape_string($a1));
   // Query and walk through the results.
   $results = db_query_range($query, $args, 0, (int) $limit);
+  // Set entries prefix.
+  $prefix = variable_get('taxosense_prefix', FALSE);
+  $prefix = $prefix ? $prefix . ' ' : '';
+  // Set entries suffix.
+  $suffix = variable_get('taxosense_suffix', FALSE);
+  $suffix = $suffix ? ' ' . $suffix : '';
+  // Build the matches array.
   while ($result = db_fetch_object($results)) {
-    $matches[$result->name] = check_plain($result->name);
+    $matches[$result->name] = check_plain($prefix . $result->name . $suffix);
   }
 
   return array('taxosense' => $matches);
@@ -59,6 +66,27 @@ function taxosense_form_searchsense_admin_alter(&$form, $form_state) {
       'term description' => t('Suggest taxonomy terms with related descriptions.'),
       'left match' => t('Just <em>left match</em> to find suggestions.'),
     ),
+  );
+
+  $form['taxosense']['extra'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Extra Options'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['taxosense']['extra']['taxosense_prefix'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Suggestion prefix'),
+    '#description' => t('e.g. <em>Show all</em>'),
+    '#default_value' => variable_get('taxosense_prefix', ''),
+  );
+
+  $form['taxosense']['extra']['taxosense_suffix'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Suggestion suffix'),
+    '#description' => t('e.g. <em>nodes</em>'),
+    '#default_value' => variable_get('taxosense_suffix', ''),
   );
 
   $form['#submit'][] = 'taxosense_admin_submit';
@@ -91,5 +119,7 @@ function taxosense_admin_submit($form, &$form_state) {
   }
 
   variable_set('taxosense_query', $query);
+  variable_set('taxosense_prefix', $form_state['values']['taxosense_prefix']);
+  variable_set('taxosense_suffix', $form_state['values']['taxosense_suffix']);
 }
 
