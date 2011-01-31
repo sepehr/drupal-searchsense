@@ -26,15 +26,10 @@ function nodesense_searchsense($a1 = '', $a2 = '', $limit = 10) {
 
   $results = db_query_range($query, $a1, 0, (int) $limit);
   while ($result = db_fetch_object($results)) {
-    if (count(module_implements('searchsense_alter'))) {
-      $matches[$result->type][$result->title] = check_plain($result->title);
-    }
-    else {
-      $matches[$result->title] = check_plain($result->title);
-    }
+    $matches[$result->type][$result->title] = check_plain($result->title);
   }
 
-  return $matches;
+  return array('nodesense' => $matches);
 }
 
 /**
