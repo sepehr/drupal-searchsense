@@ -4,6 +4,9 @@
 /**
  * @file
  * Implementation of necessary hooks and helpers for Dynamic Searchsense.
+ *
+ * @todo
+ * Make it configurable from UI to choose which searchsense providers to remove from.
  */
 
 /**
@@ -35,14 +38,12 @@ function dynosense_form_search_block_form_alter(&$form, $form_state) {
 
 /**
  * Implements hook_searchsense_alter().
+ *
+ * Removes unrelevant entries from nodesense provider results.
  */
 function dynosense_searchsense_alter(&$matches, $a1 = '', $a2 = '') {
   if (!empty($a2)) {
-    $matches = is_array($matches[$a2]) ? $matches[$a2] : array();
-  }
-
-  if (count($matches, COUNT_RECURSIVE) != count($matches)) {
-    $matches = array_pop($matches);
+    $matches['nodesense'] = is_array($matches['nodesense'][$a2]) ? $matches['nodesense'][$a2] : array();
   }
 }
 
