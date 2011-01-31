@@ -4,3 +4,4 @@ description = "Provides simple, extensible, configurable search autocompletion A
 core = 6.x
 package = Searchsense
 dependencies[] = search
+

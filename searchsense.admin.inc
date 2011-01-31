@@ -65,7 +65,6 @@ function searchsense_admin() {
   return $form;
 }
 
-
 /**
  * Validation callback for administration form.
  */
@@ -84,7 +83,6 @@ function searchsense_admin_validate($form, &$form_state) {
     ));
   }
 }
-
 
 /**
  * Submission callback for administration form.

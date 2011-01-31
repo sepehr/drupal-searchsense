@@ -4,3 +4,4 @@ description = "Implements Searchsense API to provide content (CCK) related searc
 core = 6.x
 package = Searchsense
 dependencies[] = searchsense
+

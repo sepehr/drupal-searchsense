@@ -5,3 +5,4 @@ core = 6.x
 package = Searchsense
 dependencies[] = node
 dependencies[] = searchsense
+

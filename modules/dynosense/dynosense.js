@@ -1,4 +1,4 @@
-// $Id
+// $Id$
 
 /**
  * @file
@@ -10,7 +10,6 @@
  * Defines dynosense mother object.
  */
 Drupal.dynosense = Drupal.dynosense || {};
-
 
 /**
  * Dynamically updates the searchsense autocompletion path.
@@ -48,19 +47,16 @@ Drupal.dynosense.updatePath = function(context, $typeSelector, $sense, $sensePat
   $sensePath
     .val(newPath)
     .removeClass('autocomplete-processed');
-
   // Unbind to prevent trigger duplication.
   $sense
     .unbind('keyup')
     .unbind('keydown');
-
   // Reattach the autocomplete behavior.
   Drupal.behaviors.autocomplete(document);
 
   // And return the new path.
   return newPath;
 };
-
 
 /**
  * Binds and performs dynosense.updatePath() where required.
@@ -73,7 +69,6 @@ Drupal.behaviors.dynosense = function(context) {
 
     // Perform on document ready.
     Drupal.dynosense.updatePath(context, $this, $sense, $sensePath);
-
     // And on change.
     $this.bind('change', function() {
       Drupal.dynosense.updatePath(context, $this, $sense, $sensePath);

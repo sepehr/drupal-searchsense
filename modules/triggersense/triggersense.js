@@ -10,7 +10,6 @@
  */
 Drupal.triggersense = Drupal.triggersense || {};
 
-
 /**
  * Helper method to perform a delayed form submission.
  *
@@ -26,7 +25,6 @@ Drupal.triggersense.delayedSubmit = function($form) {
 
   return false;
 };
-
 
 /**
  * Alters autocomplete fields behavior to accept Click/Enter events.
@@ -44,7 +42,6 @@ Drupal.behaviors.triggersense = function(context) {
           Drupal.triggersense.delayedSubmit($this.parents('form'));
         }
       });
-
     // Click submission trigger.
     $this
       .parents('form')
@@ -54,7 +51,6 @@ Drupal.behaviors.triggersense = function(context) {
       });
   });
 };
-
 
 /**
  * Binds the triggersense behavior where required.

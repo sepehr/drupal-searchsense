@@ -29,7 +29,6 @@ function taxosense_searchsense($a1 = '', $a2 = '', $limit = 10) {
   return $matches;
 }
 
-
 /**
  * Implements hook_form_searchsense_admin_alter().
  */
@@ -43,7 +42,7 @@ function taxosense_form_searchsense_admin_alter(&$form, $form_state) {
     '#collapsed' => TRUE,
     '#weight' => 2,
   );
-  
+
   $form['taxosense']['taxosense_options'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Choose appropriate taxonomy related suggestion options'),
@@ -55,10 +54,9 @@ function taxosense_form_searchsense_admin_alter(&$form, $form_state) {
       'left match' => t('Just <em>left match</em> to find suggestions.'),
     ),
   );
-  
+
   $form['#submit'][] = 'taxosense_admin_submit';
 }
-
 
 /**
  * Submission callback for taxosense admin settings.
@@ -73,19 +71,19 @@ function taxosense_admin_submit($form, &$form_state) {
   $fields .= $form_state['values']['taxosense_options']['term description'] ? '' : '';
   $query = "(SELECT $fields FROM {term_data} t ";
   unset($fields);
-  
+
   // Set the WHERE clause.
   $query .= "WHERE name LIKE $like";
   if ($form_state['values']['taxosense_options']['term description']) {
     $query .= " OR description LIKE $like";
   }
   $query .= ') ';
-  
+
   // Include synonyms?
   if ($form_state['values']['taxosense_options']['term synonyms']) {
     $query .= "UNION (SELECT name FROM {term_synonym} WHERE name LIKE $like)";
   }
-  
+
   variable_set('taxosense_query', $query);
 }
 

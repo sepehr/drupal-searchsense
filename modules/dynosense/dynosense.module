@@ -3,7 +3,7 @@
 
 /**
  * @file
- * Implementation of necessary hooks and helpers dor Dynamic Searchsense.
+ * Implementation of necessary hooks and helpers for Dynamic Searchsense.
  */
 
 /**
@@ -32,7 +32,6 @@ function dynosense_menu() {
 function dynosense_form_search_block_form_alter(&$form, $form_state) {
   drupal_add_js(drupal_get_path('module', 'dynosense') . '/dynosense.js');
 }
-
 
 /**
  * Implements hook_searchsense_alter().

@@ -8,6 +8,9 @@
 
 /**
  * Implements hook_init().
+ *
+ * @todo
+ * Add the JS file on proper form_alter hooks.
  */
 function triggersense_init() {
   drupal_add_js(drupal_get_path('module', 'triggersense') . '/triggersense.js');
