@@ -4,9 +4,11 @@ Description
 ===========
 Provides extensible, configurable search autocompletion ability for Drupal.
 
+
 NOTICE
 ======
 IT'S ON DEVELOPMENT STAGE AND STILL NOT READY FOR PRODUCTION.
+
 
 Installation
 ============
@@ -21,7 +23,8 @@ How to develop a Searchsense Provider
 - Implement hook_searchsense_alter() if you're interested in modifying the suggestions.
 - Checkout submodules for code examples.
 
+
 Author and Maintainer
 =====================
-sepehr (Sepehr Lajevardi)
+Sepehr Lajevardi (http://drupal.org/user/668010)
 
