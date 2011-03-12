@@ -52,7 +52,7 @@ function searchsense_admin() {
     '#type' => 'textfield',
     '#title' => t('Minimum number of characters'),
     '#description' => t('Minimum number of characters to show suggestions for.'),
-    '#default_value' => $configs['min'] + 1,
+    '#default_value' => $configs['min'],
   );
 
   $form['submit'] = array(
@@ -88,7 +88,7 @@ function searchsense_admin_validate($form, &$form_state) {
  */
 function searchsense_admin_submit($form, &$form_state) {
   variable_set('searchsense_configs', array(
-    'min' => $form_state['values']['searchsense_min'] - 1,
+    'min' => $form_state['values']['searchsense_min'],
     'limit' => $form_state['values']['searchsense_limit'],
     'use_js' => $form_state['values']['searchsense_use_js'],
     'options' => $form_state['values']['searchsense_options'],
