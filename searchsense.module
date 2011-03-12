@@ -139,20 +139,20 @@ function searchsense_form_alter(&$form, $form_state, $form_id) {
  *   A JSON object containing autocomplete suggestions.
  */
 function searchsense_autocomplete($a1 = '', $a2 = '') {
-  $configs = _searchsense_configs();
+  $configs = _searchsense_configs();dpm($configs['min']);
 
   // Check if the second argument is available.
   if (!empty($a2)) {
     // Skip short strings.
-    if (!isset($a2[$configs['min']])) {
-      return array();
+    if (drupal_strlen($a2) < $configs['min']) {
+      return drupal_json('');
     }
     list($a1, $a2) = array($a2, $a1);
   }
   else {
     // Skip short strings.
-    if (!isset($a1[$configs['min']])) {
-      return array();
+    if (drupal_strlen($a1) < $configs['min']) {
+      return drupal_json('');
     }
     $a2 = arg();
     if ($a2[0] == 'js') {
