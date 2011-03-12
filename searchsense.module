@@ -139,7 +139,7 @@ function searchsense_form_alter(&$form, $form_state, $form_id) {
  *   A JSON object containing autocomplete suggestions.
  */
 function searchsense_autocomplete($a1 = '', $a2 = '') {
-  $configs = _searchsense_configs();dpm($configs['min']);
+  $configs = _searchsense_configs();
 
   // Check if the second argument is available.
   if (!empty($a2)) {
