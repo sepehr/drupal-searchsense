@@ -1,5 +1,3 @@
-// $Id$
-
 Description
 ===========
 Provides extensible, configurable search autocompletion ability for Drupal.
