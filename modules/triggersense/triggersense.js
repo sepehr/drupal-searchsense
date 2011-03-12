@@ -1,5 +1,3 @@
-// $Id$
-
 /**
  * @file
  * Searchsense Trigger JS behaviors.

@@ -1,5 +1,3 @@
-// $Id$
-
 /**
  * @file
  * Contains necessary Drupal JS behaviors to make the searchsense
